@@ -1,0 +1,27 @@
+{
+  "name": "github-backup",
+  "version": "0.0.0",
+  "description": "backup git repositories locally",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ericlathrop/github-backup.git"
+  },
+  "keywords": [
+    "git",
+    "backup",
+    "github"
+  ],
+  "author": "Eric Lathrop <eric@ericlathrop.com> (http://ericlathrop.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ericlathrop/github-backup/issues"
+  },
+  "homepage": "https://github.com/ericlathrop/github-backup",
+  "dependencies": {
+    "github": "^0.2.2"
+  }
+}
