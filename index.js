@@ -43,12 +43,16 @@ function getPublicUserRepos(user) {
 	});
 }
 
-function backupRepo(repo) {
-	console.log(repo.clone_url);
-}
-
 function getOrgRepos(org) {
 	return get("/orgs/" + org.login + "/repos");
+}
+
+function backupRepo(repo) {
+	var re = new RegExp("https://github\.com/([^/]+)/([^/]+)\.git");
+	var matches = repo.clone_url.match(re);
+	var user = matches[1];
+	var repoName = matches[2];
+	console.log(repo.clone_url, user, repoName);
 }
 
 getPublicUserRepos("ericlathrop").each(backupRepo);
