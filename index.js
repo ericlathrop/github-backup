@@ -35,11 +35,12 @@ function get(path) {
 	return httpsGet(options).then(promisifyReadableStream).then(JSON.parse);
 }
 
-function backupPublicUserRepos(user) {
-	get("/users/" + user + "/repos").each(backupRepo).done();
-	get("/users/" + user + "/orgs").map(getOrgRepos).each(function(repos) {
-		repos.forEach(backupRepo);
-	}).done();
+function getPublicUserRepos(user) {
+	var userRepos = get("/users/" + user + "/repos").all();
+	var orgRepos = get("/users/" + user + "/orgs").map(getOrgRepos).all();
+	return Promise.join(userRepos, orgRepos, function(userRepos, orgRepos) {
+		return userRepos.concat.apply(userRepos, orgRepos);
+	});
 }
 
 function backupRepo(repo) {
@@ -50,4 +51,4 @@ function getOrgRepos(org) {
 	return get("/orgs/" + org.login + "/repos");
 }
 
-backupPublicUserRepos("ericlathrop");
+getPublicUserRepos("ericlathrop").each(backupRepo);
