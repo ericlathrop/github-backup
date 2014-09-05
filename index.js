@@ -35,22 +35,19 @@ function get(path) {
 	return httpsGet(options).then(promisifyReadableStream).then(JSON.parse);
 }
 
-get("/users/ericlathrop/repos").then(function(repos) {
-	repos.forEach(backupRepo);
-}, function(err) {
-	console.error("err", err);
-}).done();
+function backupPublicUserRepos(user) {
+	get("/users/" + user + "/repos").each(backupRepo).done();
+	get("/users/" + user + "/orgs").map(getOrgRepos).each(function(repos) {
+		repos.forEach(backupRepo);
+	}).done();
+}
 
 function backupRepo(repo) {
-	console.log(repo["clone_url"]);
+	console.log(repo.clone_url);
 }
 
-get("/users/ericlathrop/orgs").then(function(orgs) {
-	orgs.forEach(backupOrg);
-}).done();
-
-function backupOrg(org) {
-	get("/orgs/" + org.login + "/repos").then(function(repos) {
-		repos.forEach(backupRepo);
-	});
+function getOrgRepos(org) {
+	return get("/orgs/" + org.login + "/repos");
 }
+
+backupPublicUserRepos("ericlathrop");
