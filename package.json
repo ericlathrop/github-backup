@@ -4,7 +4,7 @@
   "description": "backup git repositories locally",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint-js": "bash -c \"jshint *.js\""
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,34 @@
   },
   "homepage": "https://github.com/ericlathrop/github-backup",
   "dependencies": {
-    "github": "^0.2.2"
+    "bluebird": "^2.3.2"
+  },
+  "devDependencies": {
+    "jshint": "^2.5.5"
+  },
+  "jshintConfig": {
+    "camelcase": true,
+    "curly": true,
+    "eqeqeq": true,
+    "forin": true,
+    "freeze": true,
+    "immed": true,
+    "indent": 4,
+    "latedef": "nofunc",
+    "newcap": true,
+    "noarg": true,
+    "noempty": true,
+    "nonbsp": true,
+    "nonew": true,
+    "quotmark": "double",
+    "unused": "strict",
+    "trailing": true,
+    "browser": true,
+    "devel": true,
+    "globalstrict": true,
+    "globals": {
+      "module": false,
+      "require": false
+    }
   }
 }
