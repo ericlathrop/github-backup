@@ -13,8 +13,7 @@ var github = require("../lib/github");
 
 var path = require("path");
 var fs = Promise.promisifyAll(require("fs"));
-function backupRepo(repo, destinationDir) {
-	var url = repo.clone_url; // jshint ignore:line
+function backupRepo(url, destinationDir) {
 	var re = new RegExp("https://github\\.com/([^/]+)/([^/]+)");
 	var matches = url.match(re);
 	var user = matches[1];
@@ -35,13 +34,13 @@ function backupRepo(repo, destinationDir) {
 	});
 }
 
-function backupRepoSerialized(repo, destinationDir, promise) {
+function backupRepoSerialized(url, destinationDir, promise) {
 	if (promise) {
 		return promise.then(function() {
-			return backupRepo(repo, destinationDir);
+			return backupRepo(url, destinationDir);
 		});
 	} else {
-		return backupRepo(repo, destinationDir);
+		return backupRepo(url, destinationDir);
 	}
 }
 
@@ -49,8 +48,8 @@ function backupPublicUserRepos(username, destinationDir) {
 	github.getPublicUserRepos(username).then(function(repos) {
 		var promise;
 		for (var i = 0; i < repos.length; i++) {
-			var repo = repos[i];
-			promise = backupRepoSerialized(repo, destinationDir, promise);
+			var url = repos[i].clone_url; // jshint ignore:line
+			promise = backupRepoSerialized(url, destinationDir, promise);
 		}
 		return promise;
 	}, function(err) {
