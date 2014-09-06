@@ -8,6 +8,8 @@ var fs = Promise.promisifyAll(require("fs"));
 var path = require("path");
 var exec = Promise.promisify(require("child_process").exec);
 
+var destinationDir = "repos";
+
 function httpsGet(options) {
 	return new Promise(function(resolve, reject) {
 		https.get(options, function(res) {
@@ -66,7 +68,7 @@ function backupRepo(repo) {
 	var matches = url.match(re);
 	var user = matches[1];
 	var repoName = matches[2];
-	var repoPath = path.join(user, repoName);
+	var repoPath = path.join(destinationPath, user, repoName);
 	// console.log(url, user, repoName);
 
 	return fs.statAsync(user).error(function() {
