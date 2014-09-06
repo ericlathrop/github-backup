@@ -2,7 +2,6 @@
 
 var Promise = require("bluebird"); // jshint ignore:line
 
-var destinationDir = "repos";
 /*
  * Replace with a GitHub Access Token for higher API rate limits.
  * You can generate on on https://github.com/settings/applications#personal-access-tokens
@@ -106,23 +105,35 @@ function backupRepo(repo, destinationDir) {
 	});
 }
 
-function backupRepoSerialized(repo, promise) {
+function backupRepoSerialized(repo, destinationDir, promise) {
 	if (promise) {
 		return promise.then(function() {
-			return backupRepo(repo);
+			return backupRepo(repo, destinationDir);
 		});
 	} else {
-		return backupRepo(repo);
+		return backupRepo(repo, destinationDir);
 	}
 }
 
-getPublicUserRepos("ericlathrop").then(function(repos) {
-	var promise;
-	for (var i = 0; i < repos.length; i++) {
-		var repo = repos[i];
-		promise = backupRepoSerialized(repo, promise);
+function backupPublicUserRepos(username, destinationDir) {
+	getPublicUserRepos(username).then(function(repos) {
+		var promise;
+		for (var i = 0; i < repos.length; i++) {
+			var repo = repos[i];
+			promise = backupRepoSerialized(repo, destinationDir, promise);
+		}
+		return promise;
+	}, function(err) {
+		console.error("Unhandled error:", err);
+	}).done();
+}
+
+function main(argv) {
+	var args = argv.slice(2);
+	if (args.length !== 2) {
+		console.error("Usage: github-backup username path");
+		process.exit(-1);
 	}
-	return promise;
-}, function(err) {
-	console.error("Unhandled error:", err);
-}).done();
+	backupPublicUserRepos(args[0], args[1]);
+}
+main(process.argv);
