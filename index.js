@@ -3,10 +3,10 @@
 var Promise = require("bluebird"); // jshint ignore:line
 
 /*
- * Replace with a GitHub Access Token for higher API rate limits.
+ * A GitHub Access Token for higher API rate limits.
  * You can generate on on https://github.com/settings/applications#personal-access-tokens
  */
-var accessToken;
+var accessToken = process.env.GITHUB_ACCESS_TOKEN;
 
 var http = require("http");
 var https = require("https");
