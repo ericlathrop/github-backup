@@ -1,12 +1,6 @@
 "use strict";
 
-var http = require("http");
-var https = require("https");
-var url = require("url");
 var Promise = require("bluebird");
-var fs = Promise.promisifyAll(require("fs"));
-var path = require("path");
-var exec = Promise.promisify(require("child_process").exec);
 
 var destinationDir = "repos";
 /*
@@ -15,6 +9,8 @@ var destinationDir = "repos";
  */
 var accessToken = undefined;
 
+var http = require("http");
+var https = require("https");
 function httpsGet(options) {
 	return new Promise(function(resolve, reject) {
 		https.get(options, function(res) {
@@ -32,6 +28,7 @@ function httpsGet(options) {
 		});
 	});
 }
+
 function promisifyReadableStream(stream) {
 	return new Promise(function(resolve, reject) {
 		var data = "";
@@ -45,6 +42,7 @@ function promisifyReadableStream(stream) {
 	});
 }
 
+var url = require("url");
 function get(path) {
 	var options = url.parse("https://api.github.com" + path);
 	options.headers = {
@@ -70,6 +68,23 @@ function getOrgRepos(org) {
 	return get("/orgs/" + org.login + "/repos");
 }
 
+var childProcess = require("child_process");
+function exec(command, args, options) {
+	return new Promise(function(resolve, reject) {
+		options = options || {};
+		options.stdio = ["ignore", process.stdout, process.stderr];
+		childProcess.spawn(command, args, options).on("close", function(code) {
+			if (code === 0) {
+				resolve();
+			} else {
+				reject("Process exited with code " + code);
+			}
+		});
+	});
+}
+
+var path = require("path");
+var fs = Promise.promisifyAll(require("fs"));
 function backupRepo(repo) {
 	var url = repo.clone_url;
 	var re = new RegExp("https://github\.com/([^/]+)/([^/]+)");
@@ -83,22 +98,18 @@ function backupRepo(repo) {
 	}).then(function() {
 		return fs.statAsync(repoPath);
 	}).then(function() {
-		console.log("updating", url);
-		return exec("git remote update", { cwd: repoPath });
+		console.log("Updating", url);
+		return exec("git", ["remote", "update"], { cwd: repoPath });
 	}, function(err) {
-		console.log("cloning", url);
-		return exec("git clone --mirror " + url + " " + repoPath);
+		console.log("Cloning", url);
+		return exec("git", ["clone", "--mirror", url, repoPath]);
 	});
 }
 
 function backupRepoSerialized(repo, promise) {
 	if (promise) {
-		return promise.then(function(stdout) {
-			console.log("finished");
-			console.log(stdout);
+		return promise.then(function() {
 			return backupRepo(repo);
-		}, function(err) {
-			console.log("backupRepo err", err);
 		});
 	} else {
 		return backupRepo(repo);
