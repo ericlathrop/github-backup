@@ -8,38 +8,7 @@ var Promise = require("bluebird"); // jshint ignore:line
  */
 var accessToken = process.env.GITHUB_ACCESS_TOKEN;
 
-var http = require("http");
-var https = require("https");
-function httpsGet(options) {
-	return new Promise(function(resolve, reject) {
-		https.get(options, function(res) {
-			if (res.statusCode >= 400) {
-				promisifyReadableStream(res).then(function(data) {
-					reject(res.statusCode + " " + http.STATUS_CODES[res.statusCode] + "\n" + data);
-				}, function(err) {
-					reject(err);
-				});
-				return;
-			}
-			resolve(res);
-		}).on("error", function(err) {
-			reject(err);
-		});
-	});
-}
-
-function promisifyReadableStream(stream) {
-	return new Promise(function(resolve, reject) {
-		var data = "";
-		stream.on("data", function(d) {
-			data += d;
-		}).on("end", function() {
-			resolve(data);
-		}).on("error", function(err) {
-			reject(err);
-		});
-	});
-}
+var promisify = require("../lib/promisify");
 
 var url = require("url");
 function get(path) {
@@ -52,7 +21,7 @@ function get(path) {
 		options.Authorization = "token " + accessToken;
 	}
 
-	return httpsGet(options).then(promisifyReadableStream).then(JSON.parse);
+	return promisify.httpsGet(options).then(promisify.readableStream).then(JSON.parse);
 }
 
 function getPublicUserRepos(user) {
@@ -65,21 +34,6 @@ function getPublicUserRepos(user) {
 
 function getOrgRepos(org) {
 	return get("/orgs/" + org.login + "/repos");
-}
-
-var childProcess = require("child_process");
-function exec(command, args, options) {
-	return new Promise(function(resolve, reject) {
-		options = options || {};
-		options.stdio = ["ignore", process.stdout, process.stderr];
-		childProcess.spawn(command, args, options).on("close", function(code) {
-			if (code === 0) {
-				resolve();
-			} else {
-				reject("Process exited with code " + code);
-			}
-		});
-	});
 }
 
 var path = require("path");
@@ -99,10 +53,10 @@ function backupRepo(repo, destinationDir) {
 		return fs.statAsync(repoPath);
 	}).then(function() {
 		console.log("Updating", url);
-		return exec("git", ["remote", "update"], { cwd: repoPath });
+		return promisify.exec("git", ["remote", "update"], { cwd: repoPath });
 	}, function() {
 		console.log("Cloning", url);
-		return exec("git", ["clone", "--mirror", url, repoPath]);
+		return promisify.exec("git", ["clone", "--mirror", url, repoPath]);
 	});
 }
 

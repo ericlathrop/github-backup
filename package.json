@@ -1,8 +1,10 @@
 {
   "name": "github-backup",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "backup git repositories locally",
-  "main": "index.js",
+  "main": "bin/github-backup.js",
+  "bin": "bin/github-backup.js",
+  "preferGlobal": true,
   "scripts": {
     "lint-js": "bash -c \"jshint *.js\""
   },
