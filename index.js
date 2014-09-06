@@ -9,6 +9,11 @@ var path = require("path");
 var exec = Promise.promisify(require("child_process").exec);
 
 var destinationDir = "repos";
+/*
+ * Replace with a GitHub Access Token for higher API rate limits.
+ * You can generate on on https://github.com/settings/applications#personal-access-tokens
+ */
+var accessToken = undefined;
 
 function httpsGet(options) {
 	return new Promise(function(resolve, reject) {
@@ -46,6 +51,9 @@ function get(path) {
 		"User-Agent": "github-backup",
 		"Accept": "application/vnd.github.v3+json"
 	};
+	if (accessToken) {
+		options["Authorization"] = "token " + accessToken;
+	}
 
 	return httpsGet(options).then(promisifyReadableStream).then(JSON.parse);
 }
