@@ -68,8 +68,7 @@ function backupRepo(repo) {
 	var matches = url.match(re);
 	var user = matches[1];
 	var repoName = matches[2];
-	var repoPath = path.join(destinationPath, user, repoName);
-	// console.log(url, user, repoName);
+	var repoPath = path.join(destinationDir, user, repoName);
 
 	return fs.statAsync(user).error(function() {
 		return fs.mkdirAsync(user);
