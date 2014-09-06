@@ -1,13 +1,13 @@
 "use strict";
 
-var Promise = require("bluebird");
+var Promise = require("bluebird"); // jshint ignore:line
 
 var destinationDir = "repos";
 /*
  * Replace with a GitHub Access Token for higher API rate limits.
  * You can generate on on https://github.com/settings/applications#personal-access-tokens
  */
-var accessToken = undefined;
+var accessToken;
 
 var http = require("http");
 var https = require("https");
@@ -50,7 +50,7 @@ function get(path) {
 		"Accept": "application/vnd.github.v3+json"
 	};
 	if (accessToken) {
-		options["Authorization"] = "token " + accessToken;
+		options.Authorization = "token " + accessToken;
 	}
 
 	return httpsGet(options).then(promisifyReadableStream).then(JSON.parse);
@@ -85,9 +85,9 @@ function exec(command, args, options) {
 
 var path = require("path");
 var fs = Promise.promisifyAll(require("fs"));
-function backupRepo(repo) {
-	var url = repo.clone_url;
-	var re = new RegExp("https://github\.com/([^/]+)/([^/]+)");
+function backupRepo(repo, destinationDir) {
+	var url = repo.clone_url; // jshint ignore:line
+	var re = new RegExp("https://github\\.com/([^/]+)/([^/]+)");
 	var matches = url.match(re);
 	var user = matches[1];
 	var repoName = matches[2];
@@ -100,7 +100,7 @@ function backupRepo(repo) {
 	}).then(function() {
 		console.log("Updating", url);
 		return exec("git", ["remote", "update"], { cwd: repoPath });
-	}, function(err) {
+	}, function() {
 		console.log("Cloning", url);
 		return exec("git", ["clone", "--mirror", url, repoPath]);
 	});
