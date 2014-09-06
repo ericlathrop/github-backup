@@ -83,21 +83,25 @@ function backupRepo(repo) {
 	});
 }
 
+function backupRepoSerialized(repo, promise) {
+	if (promise) {
+		return promise.then(function(stdout) {
+			console.log("finished");
+			console.log(stdout);
+			return backupRepo(repo);
+		}, function(err) {
+			console.log("backupRepo err", err);
+		});
+	} else {
+		return backupRepo(repo);
+	}
+}
+
 getPublicUserRepos("ericlathrop").then(function(repos) {
 	var promise;
 	for (var i = 0; i < repos.length; i++) {
 		var repo = repos[i];
-		if (promise) {
-			promise = promise.then(function(stdout) {
-				console.log("finished");
-				console.log(stdout);
-				return backupRepo(repo);
-			}, function(err) {
-				console.log("backupRepo err", err);
-			});
-		} else {
-			promise = backupRepo(repo);
-		}
+		promise = backupRepoSerialized(repo, promise);
 	}
 	return promise;
 }, function(err) {
