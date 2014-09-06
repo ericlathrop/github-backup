@@ -90,10 +90,11 @@ function backupRepo(repo, destinationDir) {
 	var matches = url.match(re);
 	var user = matches[1];
 	var repoName = matches[2];
-	var repoPath = path.join(destinationDir, user, repoName);
+	var userPath = path.join(destinationDir, user);
+	var repoPath = path.join(userPath, repoName);
 
-	return fs.statAsync(user).error(function() {
-		return fs.mkdirAsync(user);
+	return fs.statAsync(userPath).error(function() {
+		return fs.mkdirAsync(userPath);
 	}).then(function() {
 		return fs.statAsync(repoPath);
 	}).then(function() {
