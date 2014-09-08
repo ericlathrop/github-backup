@@ -6,7 +6,7 @@
   "bin": "bin/github-backup.js",
   "preferGlobal": true,
   "scripts": {
-    "lint-js": "bash -c \"jshint *.js\""
+    "lint-js": "bash -c \"jshint bin/*.js lib/*.js\""
   },
   "repository": {
     "type": "git",
