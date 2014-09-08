@@ -1,4 +1,4 @@
-# github-install
+# github-backup
 
 Backup GitHub repositories locally. This tool mirrors all public repositories of a GitHub user and all of the organizations that user is publicly a member of. If the repositories already exist on disk, they are updated. This script is meant to be run as a cron job.
 
