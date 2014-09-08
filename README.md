@@ -7,7 +7,7 @@ The program uses the [GitHub API](https://developer.github.com/) to discover rep
 # Installation
 
 1. Install [Node.js](http://nodejs.org/)
-2. Run `npm install -g github-install
+2. Run `npm install -g github-install`
 
 # Usage
 
