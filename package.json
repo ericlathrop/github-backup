@@ -1,7 +1,7 @@
 {
   "name": "github-backup",
   "version": "0.0.1",
-  "description": "backup git repositories locally",
+  "description": "Backup GitHub repositories locally",
   "main": "bin/github-backup.js",
   "bin": "bin/github-backup.js",
   "preferGlobal": true,
