@@ -24,7 +24,7 @@ function main(argv) {
 		defaultValue: 'user,org,starred',
 		type: function(i) { return i.split(","); },
 		help: "Choose which repositories to backup. You can " +
-			"select \"user\", \"org\" and \"stared\", and any combination" +
+			"select \"user\", \"org\" and \"starred\", and any combination" +
 			" separated by a comma"
 	});
 
