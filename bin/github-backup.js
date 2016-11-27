@@ -23,14 +23,14 @@ function main(argv) {
 	parser.addArgument(['--include', '-i'], {
 		defaultValue: 'user,org,starred',
 		type: function(i) { return i.split(","); },
-		help: "Choose which repositories to backup. You can "+
-			"select user, org and stared, and any combination"+
-			" separated by ,"
+		help: "Choose which repositories to backup. You can " +
+			"select \"user\", \"org\" and \"stared\", and any combination" +
+			" separated by a comma"
 	});
 
 	parser.addArgument(['--dry-run', '-n'], {
-		action:"storeTrue",
-		help:"If set, no action is actually performed."
+		action: "storeTrue",
+		help: "If set, no action is actually performed."
 	});
 
 	var args = parser.parseArgs();
