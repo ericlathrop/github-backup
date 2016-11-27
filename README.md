@@ -12,7 +12,7 @@ The program uses the [GitHub API](https://developer.github.com/) to discover rep
 # Usage
 
 ```
-$ github-backup username path
+github-backup [-h] [-v] [--include INCLUDE] [--dry-run] username path
 ```
 
 # To-do
